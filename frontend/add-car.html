@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Car - DriveX</title>
+    <link rel="stylesheet" href="css/style.css">
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="logo">DriveX</a>
+            <div class="nav-controls">
+                <div id="guestLinks" class="nav-links">
+                    <a href="login.html" id="loginBtn" class="btn btn-ghost"><i data-lucide="log-in"></i>
+                        Login</a>
+                    <a href="register.html" id="registerBtn" class="btn"><i data-lucide="user-plus"></i> Register</a>
+                </div>
+
+                <div id="userMenu" class="nav-links hidden">
+                    <a href="add-car.html" class="btn btn-ghost" title="Add Car"><i data-lucide="plus-circle"></i>
+                        <span class="desktop-only">List Car</span></a>
+                    <a href="my-bookings.html" class="btn btn-ghost" title="My Bookings"><i
+                            data-lucide="calendar-check"></i> <span class="desktop-only">Bookings</span></a>
+                    <span class="user-greeting"><i data-lucide="user"></i> <span id="usernameDisplay">User</span></span>
+                    <button id="logoutBtn" class="icon-btn logout-btn" title="Logout"><i
+                            data-lucide="log-out"></i></button>
+                </div>
+
+                <button id="themeBtn" class="icon-btn" title="Toggle Theme"><i data-lucide="moon"></i></button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container" style="margin-top: 40px; max-width: 800px;">
+        <div class="card" style="padding: 40px;">
+            <h2 style="margin-bottom: 30px; border-bottom: 2px solid var(--secondary-color); padding-bottom: 15px;">List
+                Your Car</h2>
+            <form id="addCarForm">
+                <div class="form-group">
+                    <label for="brand">Car Brand</label>
+                    <input type="text" id="brand" name="brand" class="form-control" required placeholder="e.g. BMW">
+                </div>
+                <div class="form-group">
+                    <label for="model">Car Model</label>
+                    <input type="text" id="model" name="model" class="form-control" required
+                        placeholder="e.g. M4 Competition">
+                </div>
+                <div class="form-group">
+                    <label for="year">Year</label>
+                    <input type="number" id="year" name="year" class="form-control" required min="2000" max="2026"
+                        placeholder="e.g. 2024">
+                </div>
+                <div class="form-group">
+                    <label for="price">Price per Day (₹)</label>
+                    <input type="number" id="price" name="price" class="form-control" required min="0" step="0.01"
+                        placeholder="e.g. 150.00">
+                </div>
+                <div class="form-group">
+                    <label for="location">Location</label>
+                    <input type="text" id="location" name="location" class="form-control" required
+                        placeholder="e.g. New York, NY">
+                </div>
+                <div class="form-group">
+                    <label for="contact_number">Contact Number</label>
+                    <input type="tel" id="contact_number" name="contact_number" class="form-control" required
+                        placeholder="e.g. +1 234 567 8900">
+                </div>
+                <div class="form-group">
+                    <label for="image">Car Image</label>
+                    <input type="file" id="image" name="image" class="form-control" required accept="image/*">
+                </div>
+                <div style="text-align: right; margin-top: 30px;">
+                    <a href="index.html" class="btn btn-ghost" style="margin-right: 10px;">Cancel</a>
+                    <button type="submit" class="btn">List Car</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer style="background-color: var(--secondary-color); padding: 40px 0; margin-top: 80px;">
+        <div class="container" style="text-align: center;">
+            <p>&copy; 2026 DriveX. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="js/app.js"></script>
+    <script>
+        lucide.createIcons();
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (!currentUser && !localStorage.getItem('token')) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            const form = document.getElementById('addCarForm');
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+
+                const formData = new FormData(form);
+                // Rename fields if necessary to match backend Form(...) expectations if they differ, but they match here: brand, model, year, price_per_day, image
+                // Wait, backend expects 'price_per_day' but form has 'price'.
+                const price = formData.get('price');
+                formData.delete('price');
+                formData.append('price_per_day', price);
+
+                try {
+                    await api.addCar(formData);
+                    showAlert('Car added successfully!');
+                    setTimeout(() => window.location.href = 'index.html', 1500);
+                } catch (error) {
+                    showAlert('Failed to add car: ' + error.message, 'error');
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

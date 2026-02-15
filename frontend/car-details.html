@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Car Details - DriveX</title>
+    <link rel="stylesheet" href="css/style.css">
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="logo">DriveX</a>
+            <div class="nav-controls">
+                <div id="guestLinks" class="nav-links">
+                    <a href="login.html" id="loginBtn" class="btn btn-ghost"><i data-lucide="log-in"></i>
+                        Login</a>
+                    <a href="register.html" id="registerBtn" class="btn"><i data-lucide="user-plus"></i> Register</a>
+                </div>
+
+                <div id="userMenu" class="nav-links hidden">
+                    <a href="add-car.html" class="btn btn-ghost" title="Add Car"><i data-lucide="plus-circle"></i>
+                        <span class="desktop-only">List Car</span></a>
+                    <a href="my-bookings.html" class="btn btn-ghost" title="My Bookings"><i
+                            data-lucide="calendar-check"></i> <span class="desktop-only">Bookings</span></a>
+                    <span class="user-greeting"><i data-lucide="user"></i> <span id="usernameDisplay">User</span></span>
+                    <button id="logoutBtn" class="icon-btn logout-btn" title="Logout"><i
+                            data-lucide="log-out"></i></button>
+                </div>
+
+                <button id="themeBtn" class="icon-btn" title="Toggle Theme"><i data-lucide="moon"></i></button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Loading -->
+    <div id="loading" style="text-align: center; padding: 100px;">
+        <i data-lucide="loader" class="spin" style="width: 3rem; height: 3rem; color: var(--primary-color);"></i>
+        <p class="mt-3">Loading details...</p>
+    </div>
+
+    <!-- Car Details -->
+    <div id="carDetails" class="container hidden" style="margin-top: 40px;">
+        <a href="index.html" class="btn btn-ghost" style="margin-bottom: 20px;">&larr; Back to Fleet</a>
+
+        <div class="card" style="padding: 0; overflow: hidden;">
+            <div style="display: flex; flex-wrap: wrap;">
+                <div style="flex: 1; min-width: 300px;">
+                    <img id="carImage" src="" alt="Car Image"
+                        style="width: 100%; height: 100%; object-fit: cover; min-height: 400px;">
+                </div>
+                <div style="flex: 1; min-width: 300px; padding: 40px;">
+                    <div id="carInfo">
+                        <!-- Injected by JS -->
+                    </div>
+                    <div class="mt-4">
+                        <h3>Availability</h3>
+                        <p style="font-size: 0.9rem; opacity: 0.7; margin-bottom: 10px;">This car is booked during the
+                            following times:</p>
+                        <ul id="bookingsList" style="max-height: 300px; overflow-y: auto;">
+                            <!-- Bookings injected by JS -->
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Booking Modal (Reused) -->
+    <div id="bookingModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="modalTitle" style="margin-bottom: 20px;">Book Car</h2>
+            <form id="bookingForm">
+                <div class="form-group">
+                    <label for="startDate">Start Date & Time</label>
+                    <input type="datetime-local" id="startDate" name="startDate" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="endDate">End Date & Time</label>
+                    <input type="datetime-local" id="endDate" name="endDate" class="form-control" required>
+                </div>
+                <div style="text-align: right; margin-top: 20px;">
+                    <button type="submit" class="btn">Confirm Booking</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer style="background-color: var(--secondary-color); padding: 40px 0; margin-top: 80px;">
+        <div class="container" style="text-align: center;">
+            <p>&copy; 2026 DriveX. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="js/app.js"></script>
+    <script>
+        lucide.createIcons();
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const carId = urlParams.get('id');
+
+            const loading = document.getElementById('loading');
+            const carDetailsContainer = document.getElementById('carDetails');
+
+            if (!carId) {
+                loading.innerHTML = '<p class="text-center">Car ID not provided.</p>';
+                return;
+            }
+
+            const car = await api.getCar(carId);
+
+            if (!car) {
+                loading.innerHTML = '<p class="text-center">Car not found.</p>';
+                return;
+            }
+
+            // Render existing bookings list
+            const bookingsHtml = car.bookings && car.bookings.length > 0
+                ? car.bookings.map(b => {
+                    const start = new Date(b.start_date).toLocaleString('en-GB');
+                    const end = new Date(b.end_date).toLocaleString('en-GB');
+                    return `<li style="padding: 10px; background: var(--secondary-color); margin-bottom: 5px; border-radius: 4px;">${start} - ${end}</li>`;
+                }).join('')
+                : '<li style="padding: 10px; list-style: none; opacity: 0.7;">No current bookings.</li>';
+
+            document.getElementById('bookingsList').innerHTML = bookingsHtml;
+
+            document.getElementById('carImage').src = `${BACKEND_URL}${car.image_path}`;
+            document.getElementById('carImage').alt = `${car.brand} ${car.model}`;
+
+            const carInfo = document.getElementById('carInfo');
+            carInfo.innerHTML = `
+                <span style="background: var(--primary-color); color: white; padding: 5px 10px; border-radius: 20px; font-size: 0.9rem;">${car.year}</span>
+                <h1 style="font-size: 2.5rem; margin: 10px 0;">${car.brand} ${car.model}</h1>
+                <p style="font-size: 1.5rem; color: var(--primary-color); font-weight: 700;">${formatCurrency(car.price_per_day)} <span style="font-size: 1rem; color: var(--text-color); font-weight: 400;">/ day</span></p>
+
+                <div class="mt-4" style="background: var(--secondary-color); padding: 15px; border-radius: 8px;">
+                    <p style="display: flex; align-items: center; gap: 10px; margin-bottom: 5px;">
+                        <i data-lucide="map-pin" style="color: var(--primary-color); width: 20px;"></i>
+                        <span>${car.location}</span>
+                    </p>
+                    <p style="display: flex; align-items: center; gap: 10px;">
+                        <i data-lucide="phone" style="color: var(--primary-color); width: 20px;"></i>
+                        <span>${car.contact_number}</span>
+                    </p>
+                </div>
+
+                <div class="mt-4">
+                    <button onclick="openBookingModal(${car.id}, '${car.brand} ${car.model}', ${car.price_per_day})" class="btn" style="width: 100%; padding: 15px;">Book Now</button>
+                </div>
+            `;
+
+            loading.classList.add('hidden');
+            carDetailsContainer.classList.remove('hidden');
+            lucide.createIcons();
+
+            // Re-setup modal date min values
+            const now = new Date();
+            now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+            const currentDateTime = now.toISOString().slice(0, 16);
+            document.getElementById('startDate').min = currentDateTime;
+            document.getElementById('endDate').min = currentDateTime;
+
+            document.getElementById('startDate').addEventListener('change', function () {
+                document.getElementById('endDate').min = this.value;
+            });
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Bookings - DriveX</title>
+    <link rel="stylesheet" href="css/style.css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .booking-card {
+            display: flex;
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .booking-img {
+            width: 200px;
+            object-fit: cover;
+        }
+
+        .booking-details {
+            padding: 20px;
+            flex-grow: 1;
+        }
+
+        .booking-status {
+            padding: 5px 10px;
+            border-radius: 40px;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        .status-upcoming {
+            background: #e0f2fe;
+            color: #0284c7;
+        }
+
+        .status-active {
+            background: #dcfce7;
+            color: #16a34a;
+        }
+
+        .status-completed {
+            background: var(--secondary-color);
+            color: #4b5563;
+        }
+
+        .status-cancelled {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+    </style>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="logo">DriveX</a>
+            <div class="nav-controls">
+                <div id="guestLinks" class="nav-links">
+                    <a href="login.html" id="loginBtn" class="btn btn-ghost"><i data-lucide="log-in"></i>
+                        Login</a>
+                    <a href="register.html" id="registerBtn" class="btn"><i data-lucide="user-plus"></i> Register</a>
+                </div>
+
+                <div id="userMenu" class="nav-links hidden">
+                    <a href="add-car.html" class="btn btn-ghost" title="Add Car"><i data-lucide="plus-circle"></i>
+                        <span class="desktop-only">List Car</span></a>
+                    <a href="my-bookings.html" class="btn btn-ghost" title="My Bookings"><i
+                            data-lucide="calendar-check"></i> <span class="desktop-only">Bookings</span></a>
+                    <span class="user-greeting"><i data-lucide="user"></i> <span id="usernameDisplay">User</span></span>
+                    <button id="logoutBtn" class="icon-btn logout-btn" title="Logout"><i
+                            data-lucide="log-out"></i></button>
+                </div>
+
+                <button id="themeBtn" class="icon-btn" title="Toggle Theme"><i data-lucide="moon"></i></button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container" style="margin-top: 40px; padding: 20px;">
+        <h2 style="margin-bottom: 30px; border-bottom: 2px solid var(--secondary-color); padding-bottom: 15px;">My
+            Bookings</h2>
+
+        <div id="loading" style="text-align: center; padding: 50px;">
+            <i data-lucide="loader" class="spin" style="width: 2rem; height: 2rem; color: var(--primary-color);"></i>
+            <p class="mt-3">Loading bookings...</p>
+        </div>
+
+        <div id="bookingsList" style="display: grid; gap: 20px;">
+            <!-- Bookings injected here -->
+        </div>
+
+        <div id="noBookings" class="hidden"
+            style="text-align: center; padding: 50px; background: var(--card-bg); border-radius: 8px;">
+            <p style="font-size: 1.2rem; margin-bottom: 20px;">You haven't booked any cars yet.</p>
+            <a href="index.html" class="btn">Browse Fleet</a>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer style="background-color: var(--secondary-color); padding: 40px 0; margin-top: 80px;">
+        <div class="container" style="text-align: center;">
+            <p>&copy; 2026 DriveX. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="js/app.js"></script>
+    <script>
+        lucide.createIcons();
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            if (!currentUser && !localStorage.getItem('token')) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            const loading = document.getElementById('loading');
+            const bookingsList = document.getElementById('bookingsList');
+            const noBookings = document.getElementById('noBookings');
+
+            try {
+                const bookings = await api.getMyBookings();
+                loading.classList.add('hidden');
+
+                if (bookings.length === 0) {
+                    noBookings.classList.remove('hidden');
+                } else {
+                    bookingsList.innerHTML = bookings.map(booking => `
+                        <div class="card" style="display: flex; gap: 20px; align-items: center; flex-wrap: wrap;">
+                            <img src="${BACKEND_URL}${booking.car.image_path}" alt="${booking.car.brand}" style="width: 150px; height: 100px; object-fit: cover; border-radius: 8px;">
+                            <div style="flex: 1;">
+                                <h3 style="margin: 0 0 10px 0;">${booking.car.brand} ${booking.car.model}</h3>
+                                <p style="margin: 0; opacity: 0.8;">
+                                    <strong>From:</strong> ${new Date(booking.start_date).toLocaleString()}<br>
+                                    <strong>To:</strong> ${new Date(booking.end_date).toLocaleString()}
+                                </p>
+                            </div>
+                            <div>
+                                <span style="background: var(--success-color); color: white; padding: 5px 15px; border-radius: 20px; font-size: 0.9rem;">
+                                    Confirmed
+                                </span>
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+                }
+            } catch (error) {
+                loading.innerHTML = `<p style="color: var(--error-color);">Error loading bookings: ${error.message}</p>`;
+            }
+        });
+    </script>
+</body>
+
+</html>

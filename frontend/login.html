@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - DriveX</title>
+    <link rel="stylesheet" href="css/style.css">
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        .auth-card {
+            width: 100%;
+            max-width: 400px;
+            padding: 40px;
+            background-color: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: var(--box-shadow);
+            animation: slideUp 0.5s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="logo">DriveX</a>
+            <div class="nav-controls">
+                <div id="guestLinks" class="nav-links">
+                    <a href="login.html" id="loginBtn" class="btn btn-ghost"><i data-lucide="log-in"></i>
+                        Login</a>
+                    <a href="register.html" id="registerBtn" class="btn"><i data-lucide="user-plus"></i> Register</a>
+                </div>
+
+                <div id="userMenu" class="nav-links hidden">
+                    <a href="add-car.html" class="btn btn-ghost" title="Add Car"><i data-lucide="plus-circle"></i>
+                        <span class="desktop-only">List Car</span></a>
+                    <a href="my-bookings.html" class="btn btn-ghost" title="My Bookings"><i
+                            data-lucide="calendar-check"></i> <span class="desktop-only">Bookings</span></a>
+                    <span class="user-greeting"><i data-lucide="user"></i> <span id="usernameDisplay">User</span></span>
+                    <button id="logoutBtn" class="icon-btn logout-btn" title="Logout"><i
+                            data-lucide="log-out"></i></button>
+                </div>
+
+                <button id="themeBtn" class="icon-btn" title="Toggle Theme"><i data-lucide="moon"></i></button>
+            </div>
+        </div>
+    </nav>
+
+    <div
+        style="display: flex; justify-content: center; align-items: center; min-height: calc(100vh - 70px); padding: 20px;">
+        <div class="auth-card">
+            <h2 class="text-center mb-4" style="color: var(--primary-color);">Welcome Back</h2>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="username">Email</label>
+                    <input type="email" id="username" name="username" class="form-control" required
+                        placeholder="Enter your email">
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" class="form-control" required
+                        placeholder="Enter your password">
+                </div>
+                <button type="submit" class="btn" style="width: 100%; margin-top: 20px; padding: 12px;">Sign In</button>
+            </form>
+            <p class="text-center mt-3" style="font-size: 0.9rem; color: var(--text-color);">
+                Don't have an account? <a href="register.html"
+                    style="color: var(--primary-color); font-weight: 500;">Register here</a>
+            </p>
+        </div>
+    </div>
+    <script src="js/app.js"></script>
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+
+</html>
