@@ -8,7 +8,6 @@ wheels/
 
 # # Custom
 .env
-*.db
 car_images/*
 !car_images/.gitkeep
 
