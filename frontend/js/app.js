@@ -1,4 +1,4 @@
-const BACKEND_URL = 'http://localhost:8000';
+const BACKEND_URL = 'https://fc-project-api.nolawz.dev';
 const API_URL = BACKEND_URL + "/api";
 
 // Auth State
