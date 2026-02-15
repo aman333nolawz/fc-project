@@ -2,136 +2,134 @@
 <html lang="en-GB">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DriveX - Premium Car Rental</title>
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/luxury.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap"
-        rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DriveX - Premium Car Rental</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/luxury.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap"
+    rel="stylesheet">
 
 
-    <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Lucide Icons -->
+  <script src="js/lucide.min.js"></script>
 
-    <!-- GSAP Core + Plugins -->
-    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+  <!-- GSAP Core + Plugins -->
+  <script src="js/gsap.min.js"></script>
+  <script src="js/ScrollTrigger.min.js"></script>
 
-    <!-- Lenis Smooth Scroll -->
-    <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.29/bundled/lenis.min.js"></script>
+  <!-- Library for Smooth Scroll -->
+  <script src="js/lenis.min.js"></script>
 </head>
 
 <body>
 
-    <!-- Navbar -->
-    <nav class="navbar">
-        <div class="container nav-container">
-            <a href="index.html" class="logo">DriveX</a>
-            <div class="nav-controls">
-                <div id="guestLinks" class="nav-links">
-                    <a href="login.html" id="loginBtn" class="btn btn-ghost"><i data-lucide="log-in"></i>
-                        Login</a>
-                    <a href="register.html" id="registerBtn" class="btn"><i data-lucide="user-plus"></i> Register</a>
-                </div>
-
-                <div id="userMenu" class="nav-links hidden">
-                    <a href="add-car.html" class="btn btn-ghost" title="Add Car"><i data-lucide="plus-circle"></i>
-                        <span class="desktop-only">List Car</span></a>
-                    <a href="my-bookings.html" class="btn btn-ghost" title="My Bookings"><i
-                            data-lucide="calendar-check"></i> <span class="desktop-only">Bookings</span></a>
-                    <span class="user-greeting"><i data-lucide="user"></i> <span id="usernameDisplay">User</span></span>
-                    <button id="logoutBtn" class="icon-btn logout-btn" title="Logout"><i
-                            data-lucide="log-out"></i></button>
-                </div>
-
-                <button id="themeBtn" class="icon-btn" title="Toggle Theme"><i data-lucide="moon"></i></button>
-            </div>
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="container nav-container">
+      <a href="index.html" class="logo">DriveX</a>
+      <div class="nav-controls">
+        <div id="guestLinks" class="nav-links">
+          <a href="login.html" id="loginBtn" class="btn btn-ghost"><i data-lucide="log-in"></i>
+            Login</a>
+          <a href="register.html" id="registerBtn" class="btn"><i data-lucide="user-plus"></i> Register</a>
         </div>
-    </nav>
 
-    <!-- Hero Section -->
-    <section class="hero">
-        <div class="hero-bg" data-speed="0.5"></div>
-        <div class="hero-overlay"></div>
-        <div class="hero-content">
-            <h1 class="hero-title">Drive Performance</h1>
-            <p class="hero-subtitle">Experience Automotive Excellence</p>
-            <a href="#fleet" class="hero-cta">Explore Collection</a>
+        <div id="userMenu" class="nav-links hidden">
+          <a href="add-car.html" class="btn btn-ghost" title="Add Car"><i data-lucide="plus-circle"></i>
+            <span class="desktop-only">List Car</span></a>
+          <a href="my-bookings.html" class="btn btn-ghost" title="My Bookings"><i data-lucide="calendar-check"></i>
+            <span class="desktop-only">Bookings</span></a>
+          <span class="user-greeting"><i data-lucide="user"></i> <span id="usernameDisplay">User</span></span>
+          <button id="logoutBtn" class="icon-btn logout-btn" title="Logout"><i data-lucide="log-out"></i></button>
         </div>
-        <div class="scroll-indicator">↓</div>
-    </section>
 
-    <!-- Fleet Section -->
-    <section id="fleet">
-        <div class="container">
-            <div class="fleet-header">
-                <h2 class="fleet-title">Our Fleet</h2>
-                <p class="fleet-subtitle">Handpicked collection of premium vehicles</p>
-            </div>
-            <div id="carsContainer"
-                style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 30px;">
-                <!-- Cars will be injected here by JS -->
-                <!-- Loading State -->
-                <div style="grid-column: 1 / -1; text-align: center; padding: 50px;">
-                    <i data-lucide="loader" class="spin"
-                        style="width: 2rem; height: 2rem; color: var(--primary-color);"></i>
-                    <p class="mt-3">Loading fleet...</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Booking Modal -->
-    <div id="bookingModal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2 id="modalTitle" style="margin-bottom: 20px;">Book Car</h2>
-            <form id="bookingForm">
-                <div class="form-group">
-                    <label for="startDate">Start Date & Time</label>
-                    <input type="datetime-local" id="startDate" name="startDate" class="form-control" required>
-                </div>
-                <div class="form-group">
-                    <label for="endDate">End Date & Time</label>
-                    <input type="datetime-local" id="endDate" name="endDate" class="form-control" required>
-                </div>
-                <div style="text-align: right; margin-top: 20px;">
-                    <button type="submit" class="btn">Confirm Booking</button>
-                </div>
-            </form>
-        </div>
+        <button id="themeBtn" class="icon-btn" title="Toggle Theme"><i data-lucide="moon"></i></button>
+      </div>
     </div>
+  </nav>
 
-    <!-- Footer -->
-    <footer style="background-color: var(--secondary-color); padding: 40px 0; margin-top: auto;">
-        <div class="container" style="text-align: center;">
-            <p>&copy; 2026 DriveX. All rights reserved.</p>
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-bg" data-speed="0.5"></div>
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <h1 class="hero-title">Drive Performance</h1>
+      <p class="hero-subtitle">Experience Automotive Excellence</p>
+      <a href="#fleet" class="hero-cta">Explore Collection</a>
+    </div>
+    <div class="scroll-indicator">↓</div>
+  </section>
+
+  <!-- Fleet Section -->
+  <section id="fleet">
+    <div class="container">
+      <div class="fleet-header">
+        <h2 class="fleet-title">Our Fleet</h2>
+        <p class="fleet-subtitle">Handpicked collection of premium vehicles</p>
+      </div>
+      <div id="carsContainer"
+        style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 30px;">
+        <!-- Cars will be injected here by JS -->
+        <!-- Loading State -->
+        <div style="grid-column: 1 / -1; text-align: center; padding: 50px;">
+          <i data-lucide="loader" class="spin" style="width: 2rem; height: 2rem; color: var(--primary-color);"></i>
+          <p class="mt-3">Loading fleet...</p>
         </div>
-    </footer>
+      </div>
+    </div>
+  </section>
 
-    <script src="js/animations.js"></script>
-    <script src="js/app.js"></script>
-    <script>
-        lucide.createIcons();
-    </script>
-    <script>
-        // Set min date for date pickers to today
-        const now = new Date();
-        now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
-        const currentDateTime = now.toISOString().slice(0, 16);
+  <!-- Booking Modal -->
+  <div id="bookingModal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2 id="modalTitle" style="margin-bottom: 20px;">Book Car</h2>
+      <form id="bookingForm">
+        <div class="form-group">
+          <label for="startDate">Start Date & Time</label>
+          <input type="datetime-local" id="startDate" name="startDate" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label for="endDate">End Date & Time</label>
+          <input type="datetime-local" id="endDate" name="endDate" class="form-control" required>
+        </div>
+        <div style="text-align: right; margin-top: 20px;">
+          <button type="submit" class="btn">Confirm Booking</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
-        document.getElementById('startDate').min = currentDateTime;
-        document.getElementById('endDate').min = currentDateTime;
+  <!-- Footer -->
+  <footer style="background-color: var(--secondary-color); padding: 40px 0; margin-top: auto;">
+    <div class="container" style="text-align: center;">
+      <p>&copy; 2026 DriveX. All rights reserved.</p>
+    </div>
+  </footer>
 
-        // Update end date min based on start date
-        document.getElementById('startDate').addEventListener('change', function () {
-            document.getElementById('endDate').min = this.value;
-        });
-    </script>
+  <script src="js/animations.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    lucide.createIcons();
+  </script>
+  <script>
+    // Set min date for date pickers to today
+    const now = new Date();
+    now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+    const currentDateTime = now.toISOString().slice(0, 16);
+
+    document.getElementById('startDate').min = currentDateTime;
+    document.getElementById('endDate').min = currentDateTime;
+
+    // Update end date min based on start date
+    document.getElementById('startDate').addEventListener('change', function () {
+      document.getElementById('endDate').min = this.value;
+    });
+  </script>
 </body>
 
 </html>
