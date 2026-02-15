@@ -9,7 +9,7 @@ wheels/
 # Custom
 .env
 *.db
-media/car_images/
+car_images/
 
 # Virtual environments
 .venv
