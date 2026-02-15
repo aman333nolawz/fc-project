@@ -225,6 +225,56 @@ const api = {
         } catch (error) {
             throw error;
         }
+    },
+
+    async getMyCars() {
+        if (!token) return [];
+        try {
+            const response = await fetch(`${API_URL}/cars/my`, {
+                headers: { 'Authorization': `Bearer ${token}` },
+            });
+            if (!response.ok) throw new Error('Failed to fetch your cars');
+            return await response.json();
+        } catch (error) {
+            console.error('Error fetching your cars:', error);
+            return [];
+        }
+    },
+
+    async deleteCar(carId) {
+        if (!token) throw new Error('Not authenticated');
+        try {
+            const response = await fetch(`${API_URL}/cars/${carId}`, {
+                method: 'DELETE',
+                headers: { 'Authorization': `Bearer ${token}` },
+            });
+
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.detail || 'Failed to delete car');
+            }
+            return true;
+        } catch (error) {
+            throw error;
+        }
+    },
+
+    async cancelBooking(bookingId) {
+        if (!token) throw new Error('Not authenticated');
+        try {
+            const response = await fetch(`${API_URL}/bookings/${bookingId}`, {
+                method: 'DELETE',
+                headers: { 'Authorization': `Bearer ${token}` },
+            });
+
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.detail || 'Failed to cancel booking');
+            }
+            return true;
+        } catch (error) {
+            throw error;
+        }
     }
 };
 

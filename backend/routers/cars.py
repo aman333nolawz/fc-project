@@ -62,6 +62,15 @@ async def list_cars(db: DB):
     return cars
 
 
+@router.get("/my", response_model=list[CarResponse])
+async def get_my_cars(current_user: CurrentUser, db: DB):
+    result = await db.execute(
+        select(models.Car).where(models.Car.owner_id == current_user.id)
+    )
+    cars = result.scalars().all()
+    return cars
+
+
 @router.get("/{car_id}", response_model=CarResponseWithBookings)
 async def get_car(car_id: int, db: DB):
     result = await db.execute(
