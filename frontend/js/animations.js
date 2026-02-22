@@ -48,6 +48,7 @@ function initHeroParallax() {
 function initHeroAnimations() {
   const title = document.querySelector(".hero-title");
   const subtitle = document.querySelector(".hero-subtitle");
+  const floats = document.querySelectorAll(".hero-content img");
 
   if (!title) return;
 
@@ -67,16 +68,27 @@ function initHeroAnimations() {
     opacity: 1,
     y: 0,
     duration: 1.2,
+    textShadow: "0px 0px 10px rgba(255, 255, 255, 0.5)",
     delay: 0.3,
-  }).to(
-    subtitle,
-    {
-      opacity: 1,
-      y: 0,
-      duration: 1,
-    },
-    "-=0.6",
-  );
+  })
+    .to(
+      subtitle,
+      {
+        opacity: 1,
+        y: 0,
+        textShadow: "0px 0px 8px rgba(255, 255, 255, 0.5)",
+        duration: 1,
+      },
+      "-=0.6",
+    )
+    .to(
+      floats,
+      {
+        y: 0,
+        opacity: 1,
+      },
+      "-=0.6",
+    );
 }
 
 // ========================================
@@ -165,52 +177,68 @@ function initFloatingElements() {
   root.addEventListener("mousemove", (e) => {
     // Calculate horizontal movement since the last mouse position
     deltaX = e.clientX - oldX;
-
-    // Calculate vertical movement since the last mouse position
     deltaY = e.clientY - oldY;
-
-    // Update old coordinates with the current mouse position
     oldX = e.clientX;
     oldY = e.clientY;
   });
 
   root.querySelectorAll(".hero-content img").forEach((el) => {
-    // Add an event listener for when the mouse enters each media
+    // Store initial positions to smoothly reset after drag or inertia
+    let initialX = gsap.getProperty(el, "x") || 0;
+    let initialY = gsap.getProperty(el, "y") || 0;
+
+    // Set up floating animation using GSAP with seamless continuation
+    const floatingAnimation = gsap.timeline({ repeat: -1, yoyo: true });
+
+    floatingAnimation
+      .to(el, {
+        y: "-=15",
+        duration: 2,
+        ease: "power1.inOut",
+      })
+      .to(el, {
+        y: "+=15",
+        duration: 2,
+        ease: "power1.inOut",
+        delay: 0.1,
+      });
+
     el.addEventListener("mouseenter", () => {
       const tl = gsap.timeline({
         onComplete: () => {
           tl.kill();
         },
       });
-      tl.timeScale(1.2); // Animation will play 20% faster than normal
 
       const image = el;
       tl.to(image, {
         inertia: {
           x: {
-            velocity: deltaX * 30, // Higher number = movement amplified
-            end: 0, // Go back to the initial position
+            velocity: deltaX * 30,
+            friction: 1,
           },
           y: {
-            velocity: deltaY * 30, // Higher number = movement amplified
-            end: 0, // Go back to the initial position
+            velocity: deltaY * 30,
+            friction: 1,
           },
         },
+        onUpdate: () => {
+          // Correct the position to align with the floating animation
+          let currentX = gsap.getProperty(image, "x");
+          let currentY = gsap.getProperty(image, "y");
+
+          // Adjust the bouncing back motion to smoothly transition
+          let dx = (currentX - initialX) * 0.5;
+          let dy = (currentY - initialY) * 0.5;
+          gsap.to(image, {
+            x: initialX + dx,
+            y: initialY + dy,
+            duration: 0.5,
+            ease: "power2.out",
+            overwrite: "auto",
+          });
+        },
       });
-      tl.fromTo(
-        image,
-        {
-          rotate: 0,
-        },
-        {
-          duration: 0.4,
-          rotate: (Math.random() - 0.5) * 30, // Returns a value between -15 & 15
-          yoyo: true,
-          repeat: 1,
-          ease: "power1.inOut", // Will slow at the begin and the end
-        },
-        "<",
-      ); // The animation starts at the same time as the previous tween
     });
   });
 }
