@@ -34,7 +34,20 @@
   margin-bottom: 20px;
   position: absolute;
   top: -75px;
+  left: -50px;
   z-index: -1;
+  animation: floating 1s infinite ease-in-out;
+}
+
+@keyframes floating {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+
+  50% {
+    transform: translate(-10px, -10px);
+  }
 }
 
 .hero-title {
