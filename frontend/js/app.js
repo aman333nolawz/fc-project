@@ -1,4 +1,4 @@
-const BACKEND_URL = "https://fc-project-api.nolawz.dev";
+const BACKEND_URL = "https://fc-project.onrender.com";
 const API_URL = BACKEND_URL + "/api";
 
 // Auth State
